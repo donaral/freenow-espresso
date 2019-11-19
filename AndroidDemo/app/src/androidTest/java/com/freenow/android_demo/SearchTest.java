@@ -1,11 +1,13 @@
 package com.freenow.android_demo;
 
 import android.support.test.espresso.matcher.RootMatchers;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.freenow.android_demo.activities.MainActivity;
 
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,11 +15,11 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.anything;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -33,12 +35,22 @@ public class SearchTest {
                 .check(matches(withText("crazydog335")));
 
         onView(withId(R.id.textSearch))
-                .perform(typeText("sa"));
+                .perform(typeText("sa"))
+                .perform(closeSoftKeyboard());
 
         onData(withText("Samantha Reed"))
-                .inRoot(RootMatchers.isPlatformPopup())
+                .inRoot(RootMatchers.withDecorView(
+                        Matchers.not(Matchers.is(mainActivityTestRule.getActivity().getWindow().getDecorView())))
+                )
+                .check(matches(ViewMatchers.isDisplayed()));
+
+        onView(withText("Samantha Reed"))
+                .inRoot(RootMatchers.withDecorView(
+                        Matchers.not(Matchers.is(mainActivityTestRule.getActivity().getWindow().getDecorView())))
+                )
                 .perform(click());
 
+        onView(withId(R.id.textSearch))
+                .check(matches(ViewMatchers.withText("Samantha Reed")));
     }
-
 }

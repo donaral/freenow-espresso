@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -46,6 +47,8 @@ import static com.freenow.android_demo.utils.PermissionHelper.PERMISSIONS_REQUES
 
 public class MainActivity extends AuthenticatedActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+
+    CountingIdlingResource idlingResource = new CountingIdlingResource("DATA_LOADER");
 
     private static final String KEY_LOCATION = "location";
 
@@ -115,8 +118,11 @@ public class MainActivity extends AuthenticatedActivity
         mSearchView = findViewById(R.id.textSearch);
         mSearchView.setDropDownAnchor(R.id.searchContainer);
         mHttpClient.fetchDrivers(new HttpClient.DriverCallback() {
+
+
             @Override
             public void run() {
+            idlingResource.increment();
                 mAdapter = new DriverAdapter(MainActivity.this, mDrivers, new DriverAdapter.OnDriverClickCallback() {
                     @Override
                     public void execute(Driver driver) {
@@ -127,6 +133,7 @@ public class MainActivity extends AuthenticatedActivity
                     @Override
                     public void run() {
                         mSearchView.setAdapter(mAdapter);
+                        idlingResource.decrement();
                     }
                 });
             }

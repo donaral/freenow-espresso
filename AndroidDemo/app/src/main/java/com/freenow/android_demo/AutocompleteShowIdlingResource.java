@@ -1,29 +1,26 @@
 package com.freenow.android_demo;
 
 import android.app.Activity;
-import android.support.annotation.IdRes;
 import android.support.test.espresso.IdlingResource;
 import android.widget.AutoCompleteTextView;
 
 class AutocompleteShowIdlingResource implements IdlingResource {
 
-    private Activity activity;
-    private @IdRes int resId;
+    private AutoCompleteTextView autoCompleteTextView;
     private ResourceCallback resourceCallback;
 
-    public AutocompleteShowIdlingResource(Activity activity, @IdRes int resId) {
-        this.activity = activity;
-        this.resId = resId;
+    public AutocompleteShowIdlingResource(Activity activity) {
+        this.autoCompleteTextView = activity.findViewById(R.id.textSearch);
     }
 
     @Override
     public String getName() {
-        return this.getClass().getName() + resId;
+        return this.getClass().getName();
     }
 
     @Override
     public boolean isIdleNow() {
-        boolean idle = ((AutoCompleteTextView) activity.findViewById(resId)).getAdapter() != null;
+        boolean idle = autoCompleteTextView.getAdapter() != null;
         if (idle) {
             resourceCallback.onTransitionToIdle();
         }
@@ -33,8 +30,5 @@ class AutocompleteShowIdlingResource implements IdlingResource {
     @Override
     public void registerIdleTransitionCallback(ResourceCallback callback) {
         this.resourceCallback = callback;
-
     }
-
-
 }

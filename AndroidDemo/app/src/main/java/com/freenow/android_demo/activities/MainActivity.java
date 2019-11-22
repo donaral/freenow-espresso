@@ -48,8 +48,6 @@ import static com.freenow.android_demo.utils.PermissionHelper.PERMISSIONS_REQUES
 public class MainActivity extends AuthenticatedActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
-    CountingIdlingResource idlingResource = new CountingIdlingResource("DATA_LOADER");
-
     private static final String KEY_LOCATION = "location";
 
     @Inject
@@ -122,7 +120,6 @@ public class MainActivity extends AuthenticatedActivity
 
             @Override
             public void run() {
-            idlingResource.increment();
                 mAdapter = new DriverAdapter(MainActivity.this, mDrivers, new DriverAdapter.OnDriverClickCallback() {
                     @Override
                     public void execute(Driver driver) {
@@ -133,7 +130,6 @@ public class MainActivity extends AuthenticatedActivity
                     @Override
                     public void run() {
                         mSearchView.setAdapter(mAdapter);
-                        idlingResource.decrement();
                     }
                 });
             }

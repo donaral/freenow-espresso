@@ -9,11 +9,11 @@ jobs:
   steps:
       - checkout
       - run:
-        name: Download Dependencies
-        command: ./gradlew androidDependencies
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
       - run:
-        name: Run Tests
-        command: ./gradlew lint test
+          name: Run Tests
+          command: ./gradlew lint test
   test:
     docker:
       - image: circleci/android:api-28-alpha  # gcloud is baked into this image

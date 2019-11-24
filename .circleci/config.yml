@@ -1,5 +1,19 @@
 version: 2
 jobs:
+  build:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-25-alpha
+    environment:
+    JVM_OPTS: -Xmx3200m
+  steps:
+      - checkout
+      - run:
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
+      - run:
+        name: Run Tests
+        command: ./gradlew lint test
   test:
     docker:
       - image: circleci/android:api-28-alpha  # gcloud is baked into this image
@@ -17,13 +31,13 @@ jobs:
           command: |
             sudo gcloud auth activate-service-account --key-file="~/code/freenow-espresso-3682d-c4b546fb2c9e.json"
             sudo gcloud --quiet config set project freenow-espresso-3682d
-      - run:
-          name: Test with Firebase Test Lab
-          command: >
-            sudo gcloud firebase test android run \ 
-              --app <local_server_path>/<app_apk>.apk \ 
-              --test <local_server_path>/<app_test_apk>.apk \ 
-              --results-bucket cloud-test-freenow-espresso-3682d
+#      - run:
+#          name: Test with Firebase Test Lab
+#          command: >
+#            sudo gcloud firebase test android run \ 
+#              --app <local_server_path>/<app_apk>.apk \ 
+#              --test <local_server_path>/<app_test_apk>.apk \ 
+#              --results-bucket cloud-test-freenow-espresso-3682d
 #      - run:
 #          name: Install gsutil dependency and copy test results data
 #          command: |
